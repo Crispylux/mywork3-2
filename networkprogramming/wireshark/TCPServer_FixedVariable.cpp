@@ -1,4 +1,4 @@
-//¿¡ÄÚ TCP °íÁ¤±æÀÌ+°¡º¯±æÀÌ µ¥ÀÌÅÍ Àü¼Û ¼­¹öÄÚµå
+//ì—ì½” TCP ê³ ì •ê¸¸ì´+ê°€ë³€ê¸¸ì´ ë°ì´í„° ì „ì†¡ ì„œë²„ì½”ë“œ
 
 #include "C:\Users\AMD\Downloads\Common1.h"
 
@@ -8,12 +8,12 @@
 int main(int argc, char* argv[]) {
 	int retval;
 
-	//À©¼Ó ÃÊ±âÈ­
+	//ìœˆì† ì´ˆê¸°í™”
 	WSADATA wsa;
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 		return 1;
 
-	//¼ÒÄÏ »ı¼º
+	//ì†Œì¼“ ìƒì„±
 	SOCKET listen_sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (listen_sock == INVALID_SOCKET) err_quit("socket()");
 
@@ -30,7 +30,7 @@ int main(int argc, char* argv[]) {
 	retval = listen(listen_sock, SOMAXCONN);
 	if (retval == SOCKET_ERROR) err_quit("listen()");
 
-	//µ¥ÀÌÅÍÅë½Å¿¡ »ç¿ëÇÒ º¯¼ö
+	//ë°ì´í„°í†µì‹ ì— ì‚¬ìš©í•  ë³€ìˆ˜
 	SOCKET client_sock;
 	struct sockaddr_in clientaddr;
 	int addrlen;
@@ -46,14 +46,14 @@ int main(int argc, char* argv[]) {
 			break;
 		}
 
-		//Á¢¼ÓÇÑ Å¬¶óÀÌ¾ğÆ® Á¤º¸ Ãâ·Â
+		//ì ‘ì†í•œ í´ë¼ì´ì–¸íŠ¸ ì •ë³´ ì¶œë ¥
 		char addr[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
-		printf("\n[tcp¼­¹ö] Å¬¶óÀÌ¾ğÆ® Á¢¼Ó: ipÁÖ¼Ò=%s, Æ÷Æ®¹øÈ£=%d\n", addr, ntohs(clientaddr.sin_port));
+		printf("\n[tcpì„œë²„] í´ë¼ì´ì–¸íŠ¸ ì ‘ì†: ipì£¼ì†Œ=%s, í¬íŠ¸ë²ˆí˜¸=%d\n", addr, ntohs(clientaddr.sin_port));
 
-		//Å¬¶óÀÌ¾ğÆ®¿Í µ¥ÀÌÅÍ Åë½Å
+		//í´ë¼ì´ì–¸íŠ¸ì™€ ë°ì´í„° í†µì‹ 
 		while (1) {
-			//µ¥ÀÌÅÍ¹Ş±â(°íÁ¤±æÀÌ)
+			//ë°ì´í„°ë°›ê¸°(ê³ ì •ê¸¸ì´)
 			retval = recv(client_sock, (char*)&len, sizeof(int), MSG_WAITALL);
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
@@ -62,7 +62,7 @@ int main(int argc, char* argv[]) {
 			else if (retval == 0)
 				break;
 
-			//µ¥ÀÌÅÍ ¹Ş±â(°¡º¯±æÀÌ)
+			//ë°ì´í„° ë°›ê¸°(ê°€ë³€ê¸¸ì´)
 			retval = recv(client_sock, buf, len, MSG_WAITALL);
 			if (retval == SOCKET_ERROR) {
 				err_display("recv()");
@@ -71,20 +71,20 @@ int main(int argc, char* argv[]) {
 			else if (retval == 0)
 				break;
 
-			//¹ŞÀº µ¥ÀÌÅÍ Ãâ·Â
+			//ë°›ì€ ë°ì´í„° ì¶œë ¥
 			buf[retval] = '\0';
 			printf("[tcp/%s:%d] %s\n", addr, ntohs(clientaddr.sin_port), buf);
 		}
 
-		//¼ÒÄÏ ´İ±â
+		//ì†Œì¼“ ë‹«ê¸°
 		closesocket(client_sock);
-		printf("[tcp¼­¹ö] Å¬¶óÀÌ¾ğÆ® Á¾·á: ipÁÖ¼Ò=%s, Æ÷Æ®¹øÈ£=%d\n", addr, ntohs(clientaddr.sin_port));
+		printf("[tcpì„œë²„] í´ë¼ì´ì–¸íŠ¸ ì¢…ë£Œ: ipì£¼ì†Œ=%s, í¬íŠ¸ë²ˆí˜¸=%d\n", addr, ntohs(clientaddr.sin_port));
 	}
 
-	//¼ÒÄÏ ´İ±â
+	//ì†Œì¼“ ë‹«ê¸°
 	closesocket(listen_sock);
 
-	//À©¼Ó Á¾·á
+	//ìœˆì† ì¢…ë£Œ
 	WSACleanup();
 	return 0;
 }
