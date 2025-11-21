@@ -10,6 +10,10 @@ from tensorflow.keras.layers import Dense, Flatten
 from tensorflow.keras.optimizers import Adam
 from tensorflow.python.keras.utils.np_utils import to_categorical
 
+#혼동행렬 추가
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
+import numpy as np
+
 IMAGE_SIZE = (128,128)
 
 def load_train_data(folder_path):
@@ -116,12 +120,20 @@ hist = model.fit(
     validation_data=(X_test, y_test)
 )
 
+#혼동행렬 추가
+y_pred_probs = model.predict(X_test)
+y_pred = np.argmax(y_pred_probs, axis=1)
+y_true = np.argmax(y_test, axis=1)
+
+cm = confusion_matrix(y_true, y_pred)
 
 
 
-# acc, loss 그래프
+#acc, loss, 혼동행렬
 import matplotlib.pyplot as plt
 
+#acc
+plt.figure()
 plt.plot(hist.history['accuracy'])
 plt.plot(hist.history['val_accuracy'])
 plt.title('Accuracy graph')
@@ -131,6 +143,8 @@ plt.legend(['train','test'])
 plt.grid()
 plt.show()
 
+#loss
+plt.figure()
 plt.plot(hist.history['loss'])
 plt.plot(hist.history['val_loss'])
 plt.title('Loss graph')
@@ -138,4 +152,11 @@ plt.xlabel('epochs')
 plt.ylabel('loss')
 plt.legend(['train','test'])
 plt.grid()
+plt.show()
+
+#혼동행렬
+plt.figure(figsize=(8,6))
+disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=class_names)
+disp.plot(cmap=plt.cm.Blues, ax=plt.gca(), colorbar=True)
+plt.title("Confusion Matrix")
 plt.show()
